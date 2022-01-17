@@ -1,50 +1,69 @@
-{% extends "admin/base.html" %}
-{% load i18n admin_urls static admin_list %}
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ module_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'change' original.pk|admin_urlquote %}">{{ object|truncatewords:"18" }}</a>
+&rsaquo; {% translate 'Preview' %}
+</div>
+{% endblock %}
 
 {% block content %}
-
-<div class="page-inner">
-    <div class="page-header">
-        {% include 'includes/breadcrumbs.html' %}
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h4 class="card-title">{{ title }}</h4>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="inner text-center">
-                        <em>
-                            markdown is readable but you can always render this message in 
-                            <a target="_blank" href="https://app.slack.com/block-kit-builder/{{ slack_team }}#{{ message_blocks|urlencode }}">
-                                block-kit-builder
-                            </a>
-                        </em>
-                    </div>
-                    <div>&nbsp;</div>
+<div id="content-main">
+<div id="preview-slack" class="module">
+    <table style="width: 100%;">
+        <thead>
+            <th scope="col">Message</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
                     <pre>{{ message }}</pre>
-                    {% for attachment in attachments %}
-                    <div>&nbsp;</div>
-                    <div class="inner text-center">
-                        <em>
-                            markdown is readable but you can always render this attachment in 
-                            <a target="_blank" href="https://app.slack.com/block-kit-builder/{{ slack_team }}#{{ attachment.1|urlencode }}">
-                                block-kit-builder
-                            </a>
-                        </em>
-                    </div>
-                    <pre>{{ attachment.0 }}</pre>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <em>
+                        markdown is readable but you can always render this message in 
+                        <a target="_blank" href="https://app.slack.com/block-kit-builder/{{ slack_team }}#{{ message_blocks|urlencode }}">
+                            block-kit-builder
+                        </a>
+                    </em>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    &nbsp;
+    {% for attachment in attachments %}
+    <table style="width: 100%;">
+        <thead>
+            <th scope="col">Attachment</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <pre>{{ attachment.0 }}</pre>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <em>
+                    markdown is readable but you can always render this attachment in 
+                    <a target="_blank" href="https://app.slack.com/block-kit-builder/{{ slack_team }}#{{ attachment.1|urlencode }}">
+                        block-kit-builder
+                    </a>
+                </em>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    &nbsp;
+    {% endfor %}
 </div>
-
+</div>
 {% endblock %}
