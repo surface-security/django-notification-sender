@@ -1,0 +1,10 @@
+{% block subject %}{{ target }} status{% endblock %}
+
+{% block html %}
+<!doctype html>
+<html>
+<body>
+{{ target }} is {{ status }}
+</body>
+</html>
+{% endblock %}
