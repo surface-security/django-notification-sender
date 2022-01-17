@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.admin.utils import unquote
 from django.template.defaultfilters import truncatechars
 from django.template.response import TemplateResponse
+from django.http.response import HttpResponseNotFound
 from django.core.exceptions import PermissionDenied
 from django.utils.html import format_html_join
 from django.utils.text import capfirst
@@ -137,19 +138,13 @@ class NotificationAdmin(admin.ModelAdmin):
             raise PermissionDenied
 
         opts = model._meta
-        # block-builder preview limit is 3000 per full payload
-        # TODO: improve this truncation in the future (for multiple blocks / attachments)
-        # for now, truncate "text" to 1000..
-        extra_options = obj.options_dict
-        message_blocks = extra_options['blocks']
-        message_blocks[0]['text']['text'] = truncatechars(message_blocks[0]['text']['text'], 1000)
-        message_blocks = json.dumps({'blocks': message_blocks})
         context = {
             **self.admin_site.each_context(request),
             'title': 'Preview: %s' % obj,
             'module_name': str(capfirst(opts.verbose_name_plural)),
             'object_id': object_id,
             'original': obj,
+            'object': obj,
             'message': obj.message,
             'opts': opts,
             'preserved_filters': self.get_preserved_filters(request),
@@ -159,6 +154,13 @@ class NotificationAdmin(admin.ModelAdmin):
         request.current_app = self.admin_site.name
 
         if obj.subscription.service == models.Subscription.Service.SLACK:
+            # block-builder preview limit is 3000 per full payload
+            # TODO: improve this truncation in the future (for multiple blocks / attachments)
+            # for now, truncate "text" to 1000..
+            extra_options = obj.slack_options
+            message_blocks = extra_options['blocks']
+            message_blocks[0]['text']['text'] = truncatechars(message_blocks[0]['text']['text'], 1000)
+            message_blocks = json.dumps({'blocks': message_blocks})
             attachment_blocks = [
                 (json.dumps(_a['blocks'], indent=4), json.dumps(_a))
                 for _a in extra_options.get('attachments', [])
@@ -172,9 +174,11 @@ class NotificationAdmin(admin.ModelAdmin):
                 }
             )
             return TemplateResponse(request, "admin/notifications/notification/preview_slack.html", context)
-        elif obj.subscription.service in (models.Subscription.Service.MAIL, models.Subscription.Service.MAIL_TLA):
-            context['html_message'] = extra_options.get('html_message')
+        elif obj.subscription.service == models.Subscription.Service.MAIL:
+            context['html_message'] = obj.options_dict.get('html_message')
             return TemplateResponse(request, "admin/notifications/notification/preview_mail.html", context)
+        else:
+            raise HttpResponseNotFound(f'{obj.subscription.service} not supported')
 
     def get_target(self, obj):
         targets = [obj.target]

@@ -1,40 +1,25 @@
-{% extends "admin/base.html" %}
+{% extends "admin/notifications/notification/preview_slack.html" %}
 {% load i18n admin_urls static admin_list %}
 
-{% block title %}{{ title }}{% endblock %}
-
 {% block content %}
-
-<div class="page-inner">
-    <div class="page-header">
-        {% include 'includes/breadcrumbs.html' %}
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h4 class="card-title">{{ title }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        {% if html_message %}
-        <iframe id="message-iframe" sandbox="allow-same-origin" title="message" style="border:none;" srcdoc="{{ html_message }}"></iframe>
-        {% else %}
-        <pre>{{ original.message }}</pre>
-        {% endif %}
+<div id="content-main">
+    <div id="preview-mail" class="module">
+        <table style="width: 100%;">
+            <thead>
+                <th scope="col">Message</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {% if html_message %}
+                        <iframe id="message-iframe" sandbox="allow-same-origin" title="message" style="border:none; width: 100%;" srcdoc="{{ html_message }}" onload="document.getElementById('message-iframe').height = document.getElementById('message-iframe').contentWindow.document.body.scrollHeight;"></iframe>
+                        {% else %}
+                        <pre>{{ original.message }}</pre>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-
 {% endblock %}
-
-{% block javascripts %}
-    {{ block.super }}
-    <script>
-        // do not wait for load - content is already in iframe, less rendering glitches
-        $('#message-iframe').height($('#message-iframe').contents().height());
-    </script>
-{% endblock javascripts %}
