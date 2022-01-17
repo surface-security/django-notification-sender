@@ -8,3 +8,4 @@ __pycache__
 .vscode
 local_settings.py
 *.sqlite3
+.tox
