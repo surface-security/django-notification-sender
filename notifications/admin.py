@@ -59,7 +59,6 @@ class SubscriptionAdminForm(forms.ModelForm):
                 slackclient.chat_postMessage(
                     channel=x,
                     text=f':mega:  This channel just subscribed event *{self.cleaned_data.get("event")}* :newspaper:',
-                    as_user=1,
                 )
             except slack_sdk.errors.SlackApiError as e:
                 self.add_error(
