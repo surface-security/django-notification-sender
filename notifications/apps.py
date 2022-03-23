@@ -12,6 +12,7 @@ APP_SETTINGS = dict(
 
 class NotificationsConfig(AppConfig):
     name = 'notifications'
+    default_auto_field = 'django.db.models.AutoField'
 
     def ready(self):
         for k, v in APP_SETTINGS.items():
