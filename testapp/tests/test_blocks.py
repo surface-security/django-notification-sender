@@ -78,7 +78,6 @@ class Test(TestCase):
             self.assertEqual(
                 call,
                 mock.call(
-                    as_user=0,
                     blocks=[{'type': 'section', 'text': {'type': 'mrkdwn', 'text': 'dull version'}}],
                     channel='@someone',
                     icon_emoji=':something:',
@@ -130,7 +129,6 @@ tesla''',
             channel='@someone',
             unfurl_links=0,
             username='NotTestBot',
-            as_user=0,
             icon_emoji=':something:',
             blocks=[
                 {'type': 'section', 'text': {'type': 'mrkdwn', 'text': '*Fruits in bag:* 1'}},
