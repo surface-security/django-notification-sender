@@ -8,7 +8,6 @@ def data_fix(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('notifications', '0001_initial_20210729'),
     ]
