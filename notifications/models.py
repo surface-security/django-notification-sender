@@ -6,6 +6,7 @@ from django.template.defaultfilters import truncatechars
 
 class Event(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
+    description = models.TextField(blank=True)
     external_token = models.CharField(
         max_length=50, null=True, blank=True, help_text="If set, notifications be posted to this event through the API"
     )

@@ -25,7 +25,7 @@ class RandomTokenWidget(AdminTextInputWidget):
 @admin.register(models.Event)
 class EventAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('name', 'external_token')}),
+        (None, {'fields': ('name', 'description', 'external_token')}),
         ('Slack only', {'fields': ('slack_username', 'slack_icon', 'slack_unfurl_links')}),
         ('Mail only', {'fields': ('mail_from', 'mail_reply_to')}),
     )
