@@ -4,6 +4,33 @@ from django.db import models
 from django.template.defaultfilters import truncatechars
 
 
+class EventRef:
+    """
+    EventRef is not a model but instead a reference to current (or future, if not yet migrated) Event.
+    This allows hardcoded events to be statically referenced and automatically provisioned
+    (instead of requiring a data-only migration or the event to be manually added before code is used)
+    """
+
+    __refs = []
+
+    def __init__(self, name, description):
+        self.__class__.__refs.append(self)
+        self.name = name
+        self.description = description
+
+    def __repr__(self) -> str:
+        # to be able to use EventRef directly in Event.name queries
+        return self.name
+
+    def get_event(self) -> 'Event':
+        Event.objects.get(name=self)
+
+    @classmethod
+    def get_references(cls):
+        # return a copy of the references
+        return cls.__refs[:]
+
+
 class Event(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
     description = models.TextField(blank=True)
