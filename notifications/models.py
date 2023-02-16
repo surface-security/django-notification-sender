@@ -23,7 +23,7 @@ class EventRef:
         return self.name
 
     def get_event(self) -> 'Event':
-        Event.objects.get(name=self)
+        return Event.objects.get(name=self)
 
     @classmethod
     def get_references(cls):
