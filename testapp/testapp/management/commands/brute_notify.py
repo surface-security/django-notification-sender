@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
 from notifications import utils, models, blocks
+from testapp.models import TEST_EVENT
 
 
 class Command(BaseCommand):
@@ -20,10 +21,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        # force create event
-        e, _ = models.Event.objects.get_or_create(name='testit')
-        e.subscription_set.update_or_create(
-            event=e,
+        TEST_EVENT.get_event().subscription_set.update_or_create(
             defaults={
                 'target': options['target'],
                 'service': models.Subscription.Service.MAIL if options['mail'] else models.Subscription.Service.SLACK,
@@ -61,7 +59,7 @@ class Command(BaseCommand):
             x = utils.notify(e.name, nblocks)
             self.stdout.write(f'{x} notifications created')
             call_command('notification_sender', run_once=True)
-        return
+
         if options['spam']:
             x = 0
             for y in range(options['spam']):
