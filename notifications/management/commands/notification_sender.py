@@ -85,7 +85,7 @@ class Command(BaseCommand):
                 logger.warning('rate limited on %d - waiting %d secs', notification.pk, retry_after)
             else:
                 notification.status = Notification.STATUS_ERROR
-                logger.error('notify failed - %d - %s', notification.pk, e.response.get('error'))
+                logger.exception('notify failed - %d - %s', notification.pk, e.response.get('error'))
                 notification.save(update_fields=['status'])
 
     def __send_email_notifications(self, notification):
