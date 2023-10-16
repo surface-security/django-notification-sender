@@ -4,14 +4,13 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('notifications', '0003_auto_20210913_1050'),
+        ("notifications", "0003_auto_20210913_1050"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='notification',
-            index=models.Index(fields=['status'], name='notificatio_status_d92267_idx'),
+            model_name="notification",
+            index=models.Index(fields=["status"], name="notificatio_status_d92267_idx"),
         ),
     ]
