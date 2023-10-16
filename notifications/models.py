@@ -100,3 +100,6 @@ class Notification(models.Model):
     class Meta:
         verbose_name = 'Notification'
         verbose_name_plural = 'Notifications'
+        indexes = [
+            models.Index(fields=['status']),
+        ]
