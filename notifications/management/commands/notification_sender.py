@@ -1,20 +1,18 @@
 import json
 import logging
 import time
-
 from pathlib import Path
+
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.management import BaseCommand
 from slack_sdk import WebClient, errors
 
-from database_locks import locked
 from notifications.models import Notification, Subscription
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 
-@locked
 class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
