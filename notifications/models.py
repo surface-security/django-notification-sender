@@ -34,9 +34,6 @@ class Event(models.Model):
             api_kwargs['unfurl_links'] = 0
         if self.slack_username:
             api_kwargs['username'] = self.slack_username
-            api_kwargs['as_user'] = 0
-        else:
-            api_kwargs['as_user'] = 1
         if self.slack_icon:
             api_kwargs['icon_emoji'] = self.slack_icon
         return api_kwargs

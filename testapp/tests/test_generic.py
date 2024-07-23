@@ -146,5 +146,5 @@ class Test(TestCase):
         self.assertTrue(f1.is_valid())
         # assert API is called only with the new target
         slack_mock.assert_called_once_with(
-            as_user=1, channel='@otherone', text=':mega:  This channel just subscribed event *test_event* :newspaper:'
+            channel='@otherone', text=':mega:  This channel just subscribed event *test_event* :newspaper:'
         )
