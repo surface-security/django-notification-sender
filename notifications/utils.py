@@ -64,8 +64,6 @@ def __notify_blocks(event_name, block, queryset=None):
     targets = queryset.filter(service=Subscription.Service.SLACK)
     if targets:
         api_kwargs = event.slack_api_kwargs()
-        api_kwargs["unfurl_links"] = False
-        api_kwargs["unfurl_media"] = False
         message, extra_kwargs = block.render_slack()
         api_kwargs.update(extra_kwargs)
         for subscription in targets:
@@ -115,6 +113,7 @@ def notify(
     template=None,
     context=None,
     create_link=False,
+    unfurl_links=False,
     additional_email_targets=None,
     attachments: Optional[list[Attachment]] = None,
     slack_attachments=None,
@@ -139,6 +138,8 @@ def notify(
 
     slack_text = f'{subject}: {message}' if subject else message
     api_kwargs = event.slack_api_kwargs()
+    if unfurl_links:
+        api_kwargs["unfurl_links"] = False
     if slack_attachments:
         # TODO: can this be taken from a more "generic" arg and also use it in email?
         api_kwargs['attachments'] = slack_attachments
