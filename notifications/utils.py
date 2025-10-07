@@ -64,6 +64,8 @@ def __notify_blocks(event_name, block, queryset=None):
     targets = queryset.filter(service=Subscription.Service.SLACK)
     if targets:
         api_kwargs = event.slack_api_kwargs()
+        api_kwargs["unfurl_links"] = False
+        api_kwargs["unfurl_media"] = False
         message, extra_kwargs = block.render_slack()
         api_kwargs.update(extra_kwargs)
         for subscription in targets:
