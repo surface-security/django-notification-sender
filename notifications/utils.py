@@ -138,8 +138,6 @@ def notify(
 
     slack_text = f'{subject}: {message}' if subject else message
     api_kwargs = event.slack_api_kwargs()
-    if unfurl_links:
-        api_kwargs["unfurl_links"] = False
     if slack_attachments:
         # TODO: can this be taken from a more "generic" arg and also use it in email?
         api_kwargs['attachments'] = slack_attachments
