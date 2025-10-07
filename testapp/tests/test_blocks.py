@@ -83,7 +83,7 @@ class Test(TestCase):
                     channel='@someone',
                     icon_emoji=':something:',
                     text='dull version',
-                    unfurl_links=0,
+                    unfurl_links=False,
                     username='NotTestBot',
                 ),
             )
