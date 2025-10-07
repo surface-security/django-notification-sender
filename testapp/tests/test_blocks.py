@@ -128,7 +128,7 @@ tesla''',
         self.sc_mock.return_value.chat_postMessage.assert_called_once_with(
             text='*Fruits in bag:* 1\napple\n*Cars in garage:* 2\nfiat\ntesla',
             channel='@someone',
-            unfurl_links=0,
+            unfurl_links=False,
             username='NotTestBot',
             as_user=0,
             icon_emoji=':something:',
