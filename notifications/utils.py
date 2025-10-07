@@ -25,11 +25,13 @@ def send_event_email(event, subject, message, recipient_list, html_message=None)
             body=message,
             from_email=event.mail_from or settings.NOTIFICATIONS_MAIL_FROM,
             to=recipient_list,
-            reply_to=[event.mail_reply_to] if event.mail_reply_to else None,  # None by default
+            reply_to=[event.mail_reply_to]
+            if event.mail_reply_to
+            else None,  # None by default
             connection=connection,
         )
         if html_message:
-            msg.attach_alternative(html_message, 'text/html')
+            msg.attach_alternative(html_message, "text/html")
         return bool(msg.send())
 
 
@@ -64,12 +66,17 @@ def __notify_blocks(event_name, block, queryset=None):
     targets = queryset.filter(service=Subscription.Service.SLACK)
     if targets:
         api_kwargs = event.slack_api_kwargs()
+        api_kwargs["unfurl_links"] = False
+        api_kwargs["unfurl_media"] = False
         message, extra_kwargs = block.render_slack()
         api_kwargs.update(extra_kwargs)
         for subscription in targets:
-            for target in subscription.target.split('\n'):
+            for target in subscription.target.split("\n"):
                 Notification.objects.create(
-                    subscription=subscription, message=message, target=target.strip(), options=json.dumps(api_kwargs)
+                    subscription=subscription,
+                    message=message,
+                    target=target.strip(),
+                    options=json.dumps(api_kwargs),
                 )
                 count += 1
 
@@ -77,15 +84,17 @@ def __notify_blocks(event_name, block, queryset=None):
     if targets:
         try:
             recipient_list = {
-                mail.strip() for target in targets.values_list('target', flat=True) for mail in target.split('\n')
+                mail.strip()
+                for target in targets.values_list("target", flat=True)
+                for mail in target.split("\n")
             }
             mail_body, options = block.render_mail(
                 from_email=event.mail_from or settings.NOTIFICATIONS_MAIL_FROM,
                 recipient_list=recipient_list,
             )
-            recipient_list.update(set(options.get('recipient_list', [])))
+            recipient_list.update(set(options.get("recipient_list", [])))
             recipient_list = list(recipient_list)
-            options['reply_to'] = [event.mail_reply_to] if event.mail_reply_to else None
+            options["reply_to"] = [event.mail_reply_to] if event.mail_reply_to else None
 
             # FIXME: add html_message and attachments!
 
@@ -98,7 +107,7 @@ def __notify_blocks(event_name, block, queryset=None):
                     status=Notification.STATUS_PENDING,
                 )
         except Exception:
-            logger.exception('error notifying %s', event.name)
+            logger.exception("error notifying %s", event.name)
         count += targets.count()
 
     return count
@@ -135,15 +144,18 @@ def notify(
 
     queryset = queryset.filter(enabled=True)
 
-    slack_text = f'{subject}: {message}' if subject else message
+    slack_text = f"{subject}: {message}" if subject else message
     api_kwargs = event.slack_api_kwargs()
     if slack_attachments:
         # TODO: can this be taken from a more "generic" arg and also use it in email?
-        api_kwargs['attachments'] = slack_attachments
+        api_kwargs["attachments"] = slack_attachments
     for subscription in queryset.filter(service=Subscription.Service.SLACK):
-        for target in subscription.target.split('\n'):
+        for target in subscription.target.split("\n"):
             Notification.objects.create(
-                subscription=subscription, message=slack_text, target=target.strip(), options=json.dumps(api_kwargs)
+                subscription=subscription,
+                message=slack_text,
+                target=target.strip(),
+                options=json.dumps(api_kwargs),
             )
             count += 1
 
@@ -151,7 +163,9 @@ def notify(
     if targets:
         try:
             recipient_list = {
-                mail.strip() for target in targets.values_list('target', flat=True) for mail in target.split('\n')
+                mail.strip()
+                for target in targets.values_list("target", flat=True)
+                for mail in target.split("\n")
             }
 
             if additional_email_targets:
@@ -179,7 +193,7 @@ def notify(
                 mail_body=mail_body,
             )
         except Exception:
-            logger.exception('error notifying %s', event.name)
+            logger.exception("error notifying %s", event.name)
         count += targets.count()
 
     return count
@@ -206,7 +220,7 @@ def prepare_and_store_notifications(
         mail_options["subject"] = template_message.subject
         mail_body = template_message.body
         for alt in template_message.alternatives:
-            if alt[1] == 'text/html':
+            if alt[1] == "text/html":
                 mail_options["html_message"] = alt[0]
                 break
     for target in targets:
