@@ -5,7 +5,7 @@ from django.conf import settings
 # this strategy is
 APP_SETTINGS = dict(
     MAIL_FROM=None,
-    SLACK_APP_TOKEN=None,
+    SLACK_BOT_TOKEN=None,
     SLACK_TEAM=None,
 )
 

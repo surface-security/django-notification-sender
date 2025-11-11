@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__sc = WebClient(settings.NOTIFICATIONS_SLACK_APP_TOKEN)
+        self.__sc = WebClient(settings.NOTIFICATIONS_SLACK_BOT_TOKEN)
         self.__slack_limited = time.time()
 
     def add_arguments(self, parser):

@@ -47,7 +47,6 @@ class SenderTest(TestCase):
         self.assertEqual(m.to, ['at@mail.com'])
         # AND THEN the slack_api_call should be one.
         self.sc_mock.return_value.chat_postMessage.assert_called_once_with(
-            as_user=0,
             blocks=[{'type': 'section', 'text': {'type': 'mrkdwn', 'text': 'hello'}}],
             channel='@someone',
             icon_emoji=':something:',
@@ -146,7 +145,6 @@ class SenderTest(TestCase):
         self.assertEqual(m.to, ['at@mail.com'])
         # slack was properly formatted - with `message` only
         self.sc_mock.return_value.chat_postMessage.assert_called_once_with(
-            as_user=0,
             blocks=[{'type': 'section', 'text': {'type': 'mrkdwn', 'text': 'dull version'}}],
             channel='@someone',
             icon_emoji=':something:',

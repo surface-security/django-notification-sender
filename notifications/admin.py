@@ -47,7 +47,7 @@ class SubscriptionAdminForm(forms.ModelForm):
         # faster cold boot
         import slack_sdk
 
-        slackclient = slack_sdk.WebClient(token=settings.NOTIFICATIONS_SLACK_APP_TOKEN)
+        slackclient = slack_sdk.WebClient(token=settings.NOTIFICATIONS_SLACK_BOT_TOKEN)
         # API only allows query user/channel by ID
         # using list to be able to validate on names will return near 10k records on each of the endpoints
         # easiest (and most accurate): post test message and check error message
@@ -59,7 +59,6 @@ class SubscriptionAdminForm(forms.ModelForm):
                 slackclient.chat_postMessage(
                     channel=x,
                     text=f':mega:  This channel just subscribed event *{self.cleaned_data.get("event")}* :newspaper:',
-                    as_user=1,
                 )
             except slack_sdk.errors.SlackApiError as e:
                 self.add_error(
