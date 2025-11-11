@@ -128,7 +128,7 @@ except ImportError:
     if you want to manually call `notify()` to see it in action,
     create a local_settings.py next to the main settings.py and set
 
-    NOTIFICATIONS_SLACK_APP_TOKEN=YOUR_BOT_TOKEN
+    NOTIFICATIONS_SLACK_BOT_TOKEN=YOUR_BOT_TOKEN
     NOTIFICATIONS_SLACK_TEAM=YOUR_TEAM_ID
 
     then run `python manage.py notification_sender` and make the calls
